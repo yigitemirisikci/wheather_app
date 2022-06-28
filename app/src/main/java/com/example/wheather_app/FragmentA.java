@@ -1,4 +1,4 @@
-package com.example.wheather_app.FragmentClasses;
+package com.example.wheather_app;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -10,12 +10,13 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.databinding.BindingAdapter;
 
+import com.bumptech.glide.Glide;
 import com.example.wheather_app.R;
 
 public class FragmentA extends Fragment {
     private String loc;
-    private String time;
     private String status;
     private String temp;
     private String wind;
@@ -52,10 +53,9 @@ public class FragmentA extends Fragment {
         return view;
     }
 
-    public void getValues(String loc, String time, String status, String temp, String wind,String icon,
+    public void getValues(String loc, String status, String temp, String wind,String icon,
                           String pressure,String humidity,String visibility) {
         this.loc = loc;
-        this.time = time;
         this.status = status;
         this.temp = temp;
         this.wind = wind;
@@ -67,10 +67,6 @@ public class FragmentA extends Fragment {
 
     public String getLoc() {
         return loc;
-    }
-
-    public String getTime() {
-        return time;
     }
 
     public String getStatus() {
@@ -97,5 +93,10 @@ public class FragmentA extends Fragment {
 
     public String getHumidity() {
         return humidity;
+    }
+
+    @BindingAdapter("android:loadImage")
+    public static void loadImage(ImageView imageView, String url){
+        Glide.with(imageView).load(url).into(imageView);
     }
 }

@@ -8,8 +8,6 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.FragmentManager;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -23,8 +21,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.wheather_app.FragmentClasses.FragmentA;
-import com.example.wheather_app.FragmentClasses.SlidePagerAdapter;
 import com.example.wheather_app.RetrofitClasses.WheatherApi;
 import com.example.wheather_app.RetrofitClasses.WheatherTurkey;
 
@@ -68,7 +64,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         pager2.setClipChildren(false);
         pager2.setOffscreenPageLimit(10);
         pager2.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
-
     }
 
 
@@ -76,14 +71,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        init();
-        getLocation();
-        setRetrofit(0);
 
+        init(); //initialize
 
+        //using gps
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-
         StrictMode.setThreadPolicy(policy);
+        getLocation();
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,12 +88,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         });
     }
 
-    private void setRetrofit(int mode){ //mode == 0 -> baseLocation, mode == 1 -> get loc from edittext
+    //mode == 0 -> baseLocation, mode == 1 -> get loc from edittext
+    private void setRetrofit(int mode){
         retrofit = new Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
+
         wheatherApi = retrofit.create(WheatherApi.class);
+
         String city;
         if(mode == 0){
             city = baseLocation;
@@ -107,12 +104,16 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         else{
             city = editText.getText().toString();
         }
+
+        //If city has shown already -> error
         for(FragmentA f:fragmentList){
             if(f.getLoc().equals(city)){
                 Toast.makeText(getApplicationContext(), "City has shown already!", Toast.LENGTH_LONG).show();
                 return;
             }
         }
+
+        //If city edittext is empty
         if(!city.equals("")){
             wheatherTurkeyCall = wheatherApi.getWheather(city);
         }
@@ -121,6 +122,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             return;
         }
 
+        //retrofit call
         wheatherTurkeyCall.enqueue(new Callback<WheatherTurkey>() {
             @Override
             public void onResponse(Call<WheatherTurkey> call, Response<WheatherTurkey> response) {
@@ -130,17 +132,18 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                     {
                         FragmentA fragmentA = new FragmentA();
 
+                        //getting wheather info
                         String loc = wheatherTurkey.getLocation().getName();
-                        String time = wheatherTurkey.getLocation().getLocaltime().substring(11,16);
                         String temp = String.valueOf(wheatherTurkey.getCurrent().getTempc()) + " C";
                         String status = wheatherTurkey.getCurrent().getCondition().getText();
                         String wind = String.valueOf(wheatherTurkey.getCurrent().getWind_mph());
-                        String image = wheatherTurkey.getCurrent().getCondition().getIcon();
+                        String image = "https:" + wheatherTurkey.getCurrent().getCondition().getIcon();
                         String visibility = String.valueOf(wheatherTurkey.getCurrent().getVis_km());
                         String pressure = String.valueOf(wheatherTurkey.getCurrent().getPressure_mb());
                         String humidity = String.valueOf(wheatherTurkey.getCurrent().getHumidity());
-                        fragmentA.getValues(loc,time,status,temp,wind,image,pressure,humidity,visibility);
+                        fragmentA.getValues(loc,status,temp,wind,image,pressure,humidity,visibility);
 
+                        //adding fragment to viewpager
                         fragmentList.add(fragmentA);
                         slidePagerAdapter.setFragmentList(fragmentList);
                         pager2.setAdapter(slidePagerAdapter);
@@ -155,6 +158,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             }
         });
     }
+
+    //get location if location permission is granted, request permission otherwise...
     public void getLocation(){
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             retrieveLocation();
@@ -163,6 +168,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},200);
         }
     }
+
+
     @Override
     public void onLocationChanged(@NonNull Location location) {
 
@@ -173,6 +180,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         LocationListener.super.onProviderEnabled(provider);
     }
 
+    //this method runs if only permission is granted, getting the latitude and longitude from gps...
+    //then it retrieves the location with Geocoder
     @SuppressLint("MissingPermission")
     public void retrieveLocation(){
         LocationManager manager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -190,6 +199,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             try {
                 List<Address> addressList = geocoder.getFromLocation(latitude,longitude,1);
                 baseLocation = addressList.get(0).getAddressLine(0).split(",")[2].split("/")[1];
+                setRetrofit(0);
             }
             catch (Exception e){
                 e.printStackTrace();
@@ -197,6 +207,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         }
     }
 
+    //on permission request, if we allow the permission get the location, throw an error otherwise
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
