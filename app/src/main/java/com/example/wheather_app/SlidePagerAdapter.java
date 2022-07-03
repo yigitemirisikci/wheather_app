@@ -8,15 +8,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.wheather_app.databinding.FragmentABinding;
-import com.example.wheather_app.databinding.ViewItemBinding;
 
 import java.util.ArrayList;
 
 public class SlidePagerAdapter extends RecyclerView.Adapter<SlidePagerAdapter.ViewHolder> {
-    private ArrayList<ViewItem> fragmentList;
+    private ArrayList<FragmentA> fragmentList;
 
     //Constructor
-    public SlidePagerAdapter(ArrayList<ViewItem> fragmentList) {
+    public SlidePagerAdapter(ArrayList<FragmentA> fragmentList) {
         this.fragmentList = fragmentList;
     }
 
@@ -24,15 +23,15 @@ public class SlidePagerAdapter extends RecyclerView.Adapter<SlidePagerAdapter.Vi
     @Override
     public SlidePagerAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        ViewItemBinding viewItemBinding = ViewItemBinding.inflate(layoutInflater, parent, false);
-        return new ViewHolder(viewItemBinding);
+        FragmentABinding fragmentABinding = FragmentABinding.inflate(layoutInflater, parent, false);
+        return new ViewHolder(fragmentABinding);
     }
 
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        ViewItem viewItem = fragmentList.get(position);
-        holder.viewItemBinding.setXMLITEM(viewItem); //data binding
+        FragmentA fragmentA = fragmentList.get(position);
+        holder.fragmentABinding.setFragment(fragmentA); //data binding
     }
 
     @Override
@@ -41,16 +40,13 @@ public class SlidePagerAdapter extends RecyclerView.Adapter<SlidePagerAdapter.Vi
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        ViewItemBinding viewItemBinding;
+        FragmentABinding fragmentABinding;
 
-        public ViewHolder(@NonNull ViewItemBinding itemView) {
+        public ViewHolder(@NonNull FragmentABinding itemView) {
             super(itemView.getRoot());
-            this.viewItemBinding = itemView;
+            this.fragmentABinding= itemView;
 
         }
     }
 
-    public void setFragmentList(ArrayList<ViewItem> fragmentList) {
-        this.fragmentList = fragmentList;
-    }
 }
