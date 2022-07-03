@@ -1,149 +1,146 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <variable
             name="Fragment"
             type="com.example.wheather_app.FragmentA" />
     </data>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#3FAAFF">
 
-    <TextView
-        android:id="@+id/pressureTV_stable"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="70dp"
-        android:layout_marginTop="45dp"
-        android:text="Pressure"
-        android:textColor="#FFFFFF"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/statusTV" />
+        android:background="#3FAAFF">
 
-    <TextView
-        android:id="@+id/windTV_stable"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:text="Wind"
-        android:textColor="#FFFFFF"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/pressureTV_stable"
-        app:layout_constraintTop_toBottomOf="@+id/pressureTV_stable" />
+        <TextView
+            android:id="@+id/pressureTV_stable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="25dp"
+            android:text="Pressure"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/windTV_stable"
+            app:layout_constraintStart_toEndOf="@+id/imageView" />
 
-    <TextView
-        android:id="@+id/locTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@{Fragment.loc}"
-        android:textColor="#FFFFFF"
-        android:textSize="24sp"
-        android:textStyle="bold|italic"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/windTV_stable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="25dp"
+            android:text="Wind"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/humidityTV_stable"
+            app:layout_constraintEnd_toEndOf="@+id/pressureTV_stable" />
 
-    <TextView
-        android:id="@+id/pressureTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
-        android:text="@{Fragment.pressure}"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toEndOf="@+id/pressureTV_stable"
-        app:layout_constraintTop_toTopOf="@+id/pressureTV_stable" />
+        <TextView
+            android:id="@+id/locTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@{Fragment.loc}"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp"
+            android:textStyle="bold|italic"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/statusTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@{Fragment.status}"
-        android:textColor="#FFFFFF"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tempTV" />
+        <TextView
+            android:id="@+id/pressureTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
+            android:text="@{Fragment.pressure}"
+            android:textColor="#FFFFFF"
+            app:layout_constraintStart_toEndOf="@+id/pressureTV_stable"
+            app:layout_constraintTop_toTopOf="@+id/pressureTV_stable" />
 
-    <TextView
-        android:id="@+id/tempTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp"
-        android:text="@{Fragment.temp}"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        <TextView
+            android:id="@+id/statusTV"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginTop="8dp"
+            android:text="@{Fragment.status}"
+            android:textColor="#FFFFFF"
+            app:layout_constraintEnd_toStartOf="@+id/pressureTV_stable"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tempTV" />
 
-    <TextView
-        android:id="@+id/windTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
-        android:text="@{Fragment.wind}"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toEndOf="@+id/windTV_stable"
-        app:layout_constraintTop_toTopOf="@+id/windTV_stable" />
+        <TextView
+            android:id="@+id/tempTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{Fragment.temp}"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/pressureTV_stable"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:loadImage="@{Fragment.icon}"
-        android:layout_width="167dp"
-        android:layout_height="134dp"
-        android:layout_marginTop="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/locTV"
-        tools:srcCompat="@tools:sample/avatars" />
+        <TextView
+            android:id="@+id/windTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
+            android:text="@{Fragment.wind}"
+            android:textColor="#FFFFFF"
+            app:layout_constraintStart_toEndOf="@+id/windTV_stable"
+            app:layout_constraintTop_toTopOf="@+id/windTV_stable" />
 
-    <TextView
-        android:id="@+id/humidityTV_stable"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:text="Humidity"
-        android:textColor="#FFFFFF"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/windTV_stable"
-        app:layout_constraintTop_toBottomOf="@+id/windTV_stable" />
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="167dp"
+            android:layout_height="134dp"
+            android:layout_marginTop="20dp"
+            android:loadImage="@{Fragment.icon}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/locTV"
+            tools:srcCompat="@tools:sample/avatars" />
 
-    <TextView
-        android:id="@+id/humidityTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
-        android:text="@{Fragment.humidity}"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toEndOf="@+id/humidityTV_stable"
-        app:layout_constraintTop_toTopOf="@+id/humidityTV_stable" />
+        <TextView
+            android:id="@+id/humidityTV_stable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="25dp"
+            android:text="Humidity"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/visibilityTV_stable"
+            app:layout_constraintEnd_toEndOf="@+id/windTV_stable" />
 
-    <TextView
-        android:id="@+id/visibilityTV_stable"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:text="Visibility"
-        android:textColor="#FFFFFF"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/humidityTV_stable"
-        app:layout_constraintTop_toBottomOf="@+id/humidityTV_stable" />
+        <TextView
+            android:id="@+id/humidityTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
+            android:text="@{Fragment.humidity}"
+            android:textColor="#FFFFFF"
+            app:layout_constraintStart_toEndOf="@+id/humidityTV_stable"
+            app:layout_constraintTop_toTopOf="@+id/humidityTV_stable" />
 
-    <TextView
-        android:id="@+id/visibilityTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
-        android:text="@{Fragment.visibility}"
-        android:textColor="#FFFFFF"
-        app:layout_constraintStart_toEndOf="@+id/visibilityTV_stable"
-        app:layout_constraintTop_toTopOf="@+id/visibilityTV_stable" />
+        <TextView
+            android:id="@+id/visibilityTV_stable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Visibility"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/tempTV"
+            app:layout_constraintEnd_toEndOf="@+id/humidityTV_stable" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/visibilityTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
+            android:text="@{Fragment.visibility}"
+            android:textColor="#FFFFFF"
+            app:layout_constraintStart_toEndOf="@+id/visibilityTV_stable"
+            app:layout_constraintTop_toTopOf="@+id/visibilityTV_stable" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

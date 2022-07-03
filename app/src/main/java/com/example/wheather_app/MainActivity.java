@@ -4,7 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.viewpager2.widget.ViewPager2;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -49,21 +50,18 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private String baseLocation;
 
     //FRAGMENT
-    private ViewPager2 pager2;
-    private ArrayList<FragmentA> fragmentList;
+    private RecyclerView recyclerView;
+    private ArrayList<ViewItem> itemList;
     private SlidePagerAdapter slidePagerAdapter;
 
     private void init(){
         button =findViewById(R.id.button);
         editText = findViewById(R.id.edittext);
-        pager2 = findViewById(R.id.pager);
-        fragmentList = new ArrayList<>();
-        slidePagerAdapter = new SlidePagerAdapter(fragmentList);
-        pager2.setAdapter(slidePagerAdapter);
-        pager2.setClipToPadding(false);
-        pager2.setClipChildren(false);
-        pager2.setOffscreenPageLimit(10);
-        pager2.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
+        recyclerView = findViewById(R.id.recyclerView);
+        itemList = new ArrayList<>();
+        slidePagerAdapter = new SlidePagerAdapter(itemList);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(slidePagerAdapter);
     }
 
 
@@ -82,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setRetrofit(1);
+                //setRetrofit(1);
                 editText.setText("");
             }
         });
@@ -106,8 +104,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         }
 
         //If city has shown already -> error
-        for(FragmentA f:fragmentList){
-            if(f.getLoc().equals(city)){
+        for(ViewItem v: itemList){
+            if(v.getCity().equals(city)){
                 Toast.makeText(getApplicationContext(), "City has shown already!", Toast.LENGTH_LONG).show();
                 return;
             }
@@ -131,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                     if (wheatherTurkey != null)
                     {
                         FragmentA fragmentA = new FragmentA();
+                        ViewItem viewItem = new ViewItem();
 
                         //getting wheather info
                         String loc = wheatherTurkey.getLocation().getName();
@@ -142,11 +141,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                         String pressure = String.valueOf(wheatherTurkey.getCurrent().getPressure_mb());
                         String humidity = String.valueOf(wheatherTurkey.getCurrent().getHumidity());
                         fragmentA.getValues(loc,status,temp,wind,image,pressure,humidity,visibility);
+                        viewItem.getValues(loc,temp,image);
 
                         //adding fragment to viewpager
-                        fragmentList.add(fragmentA);
-                        slidePagerAdapter.setFragmentList(fragmentList);
-                        pager2.setAdapter(slidePagerAdapter);
+                        itemList.add(viewItem);
+                        slidePagerAdapter.notifyItemInserted(itemList.size()-1);
+                        recyclerView.scrollToPosition(itemList.size()-1);
+                        //slidePagerAdapter.setFragmentList(itemList);
 
                     }
                 }
