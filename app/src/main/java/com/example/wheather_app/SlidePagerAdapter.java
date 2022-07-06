@@ -7,15 +7,15 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.wheather_app.databinding.FragmentABinding;
+import com.example.wheather_app.databinding.ViewItemBinding;
 
 import java.util.ArrayList;
 
 public class SlidePagerAdapter extends RecyclerView.Adapter<SlidePagerAdapter.ViewHolder> {
-    private ArrayList<FragmentA> fragmentList;
+    private ArrayList<ViewItem> fragmentList;
 
     //Constructor
-    public SlidePagerAdapter(ArrayList<FragmentA> fragmentList) {
+    public SlidePagerAdapter(ArrayList<ViewItem> fragmentList) {
         this.fragmentList = fragmentList;
     }
 
@@ -23,15 +23,15 @@ public class SlidePagerAdapter extends RecyclerView.Adapter<SlidePagerAdapter.Vi
     @Override
     public SlidePagerAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        FragmentABinding fragmentABinding = FragmentABinding.inflate(layoutInflater, parent, false);
-        return new ViewHolder(fragmentABinding);
+        ViewItemBinding viewItemBinding = ViewItemBinding.inflate(layoutInflater, parent, false);
+        return new ViewHolder(viewItemBinding);
     }
 
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        FragmentA fragmentA = fragmentList.get(position);
-        holder.fragmentABinding.setFragment(fragmentA); //data binding
+        ViewItem viewItem = fragmentList.get(position);
+        holder.viewItemBinding.setViewItem(viewItem); //data binding
     }
 
     @Override
@@ -40,13 +40,17 @@ public class SlidePagerAdapter extends RecyclerView.Adapter<SlidePagerAdapter.Vi
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        FragmentABinding fragmentABinding;
+        ViewItemBinding viewItemBinding;
 
-        public ViewHolder(@NonNull FragmentABinding itemView) {
+        public ViewHolder(@NonNull ViewItemBinding itemView) {
             super(itemView.getRoot());
-            this.fragmentABinding= itemView;
-
+            this.viewItemBinding= itemView;
+            itemView.fragmentButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    MainActivity.changeFragment(itemView.getViewItem());
+                }
+            });
         }
     }
-
 }

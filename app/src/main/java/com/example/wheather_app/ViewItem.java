@@ -13,18 +13,16 @@ import androidx.annotation.Nullable;
 import androidx.databinding.BindingAdapter;
 
 import com.bumptech.glide.Glide;
-import com.example.wheather_app.R;
-import com.squareup.picasso.Picasso;
 
-public class FragmentA extends Fragment {
+public class ViewItem extends Fragment {
     public String loc;
-    private String status;
-    private String temp;
-    private String wind;
-    private String pressure;
-    private String visibility;
-    private String humidity;
-    private String icon;
+    public String status;
+    public String temp;
+    public String wind;
+    public String pressure;
+    public String visibility;
+    public String humidity;
+    public String icon;
 
     private TextView locTV;
     private TextView statusTV;
@@ -50,16 +48,6 @@ public class FragmentA extends Fragment {
         humidityTV = view.findViewById(R.id.humidityTV);
         pressureTV = view.findViewById(R.id.pressureTV);
         image = view.findViewById(R.id.imageView);
-
-        locTV.setText(loc);
-        statusTV.setText(status);
-        tempTV.setText(temp);
-        windTV.setText(wind);
-        visibilityTV.setText(visibility);
-        humidityTV.setText(humidity);
-        pressureTV.setText(pressure);
-
-        Picasso.get().load(icon).into(image);
 
         return view;
     }

@@ -12,6 +12,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -20,15 +21,18 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.wheather_app.RetrofitClasses.WheatherApi;
 import com.example.wheather_app.RetrofitClasses.WheatherTurkey;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -42,7 +46,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements LocationListener {
     //XML ITEMS
-    private Button button;
+    private ImageView button;
     private EditText editText;
 
     //RETROFIT
@@ -54,14 +58,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private String baseLocation;
 
     //FRAGMENT
+    private static FragmentManager manager;
     private RecyclerView recyclerView;
-    private ArrayList<FragmentA> itemList;
+    private ArrayList<ViewItem> itemList;
     private SlidePagerAdapter slidePagerAdapter;
 
 
 
     private void init(){
-        button =findViewById(R.id.button);
+        button =findViewById(R.id.btn_search);
         editText = findViewById(R.id.edittext);
         recyclerView = findViewById(R.id.recyclerView);
         itemList = new ArrayList<>();
@@ -69,7 +74,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(slidePagerAdapter);
 
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
+        dividerItemDecoration.setDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.divider));
+        recyclerView.addItemDecoration(dividerItemDecoration);
 
+        manager = getFragmentManager();
     }
 
 
@@ -96,25 +105,19 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
     //mode == 0 -> baseLocation, mode == 1 -> get loc from edittext
     private void setRetrofit(int mode){
-        retrofit = new Retrofit.Builder()
-                .baseUrl(baseUrl)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
+        retrofit = new Retrofit.Builder().baseUrl(baseUrl).addConverterFactory(GsonConverterFactory.create()).build();
         wheatherApi = retrofit.create(WheatherApi.class);
 
         String city;
-        if(mode == 0){
-            city = baseLocation;
-        }
-        else{
-            city = editText.getText().toString();
-        }
+
+        if(mode == 0) city = baseLocation;
+        else city = editText.getText().toString();
+
         city = replaceTurkishChars(city);
 
         //If city has shown already -> error
-        for(FragmentA f: itemList){
-            if(f.getLoc().equals(city)){
+        for(ViewItem v: itemList){
+            if(v.getLoc().equals(city)){
                 Toast.makeText(getApplicationContext(), "City has shown already!", Toast.LENGTH_LONG).show();
                 return;
             }
@@ -138,6 +141,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                     if (wheatherTurkey != null)
                     {
                         FragmentA fragmentA = new FragmentA();
+                        ViewItem viewItem  = new ViewItem();
 
                         //getting wheather info
                         String loc = wheatherTurkey.getLocation().getName();
@@ -148,12 +152,23 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                         String visibility = String.valueOf(wheatherTurkey.getCurrent().getVis_km());
                         String pressure = String.valueOf(wheatherTurkey.getCurrent().getPressure_mb());
                         String humidity = String.valueOf(wheatherTurkey.getCurrent().getHumidity());
-                        fragmentA.getValues(loc,status,temp,wind,image,pressure,humidity,visibility);
 
-                        //adding fragment to viewpager
-                        itemList.add(fragmentA);
+                        fragmentA.getValues(loc,status,temp,wind,image,pressure,humidity,visibility);
+                        viewItem.getValues(loc,status,temp,wind,image,pressure,humidity,visibility);
+
+                        //adding fragment to recyclerview
+                        itemList.add(viewItem);
                         slidePagerAdapter.notifyItemInserted(itemList.size()-1);
                         recyclerView.scrollToPosition(itemList.size()-1);
+
+                        //adding fragment
+                            FragmentA f = (FragmentA) manager.findFragmentByTag("fragmentA_tag");
+                            FragmentTransaction fragmentTransaction = manager.beginTransaction();
+                            if(f != null){
+                                fragmentTransaction.remove(f);
+                            }
+                            fragmentTransaction.add(R.id.fragment,fragmentA,"fragmentA_tag");
+                            fragmentTransaction.commit();
 
                     }
                 }
@@ -199,15 +214,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
         if(location != null){
             double latitude, longitude;
+
             latitude = location.getLatitude();
             longitude = location.getLongitude();
 
             Geocoder geocoder = new Geocoder(this, Locale.getDefault());
             try {
                 List<Address> addressList = geocoder.getFromLocation(latitude,longitude,1);
+                baseLocation = addressList.get(0).getAddressLine(0);
 
-                Toast.makeText(getApplicationContext(), addressList.get(0).getAddressLine(0), Toast.LENGTH_LONG).show();
-                baseLocation = addressList.get(0).getAddressLine(0).split("/")[1].split(",")[0];
                 setRetrofit(0);
             }
             catch (Exception e){
@@ -241,5 +256,19 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         st= st.replace('Ç', 'C');
         st= st.replace('ı', 'i');
         return st;
+    }
+
+    public static void changeFragment(ViewItem viewItem){
+        FragmentA f = (FragmentA) manager.findFragmentByTag("fragmentA_tag");
+        FragmentTransaction fragmentTransaction = manager.beginTransaction();
+        if(f != null){
+            fragmentTransaction.remove(f);
+        }
+        FragmentA fragmentA = new FragmentA();
+        fragmentA.getValues(viewItem.loc,viewItem.status,viewItem.temp,viewItem.wind,viewItem.icon,viewItem.pressure
+        ,viewItem.humidity,viewItem.visibility);
+
+        fragmentTransaction.add(R.id.fragment,fragmentA,"fragmentA_tag");
+        fragmentTransaction.commit();
     }
 }
