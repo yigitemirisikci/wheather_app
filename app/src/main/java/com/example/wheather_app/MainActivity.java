@@ -147,10 +147,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                         String loc = wheatherTurkey.getLocation().getName();
                         String temp = String.valueOf(wheatherTurkey.getCurrent().getTempc()) + " C";
                         String status = wheatherTurkey.getCurrent().getCondition().getText();
-                        String wind = String.valueOf(wheatherTurkey.getCurrent().getWind_mph());
+                        String wind = String.valueOf(wheatherTurkey.getCurrent().getWind_mph() + " mph");
                         String image = "https:" + wheatherTurkey.getCurrent().getCondition().getIcon();
-                        String visibility = String.valueOf(wheatherTurkey.getCurrent().getVis_km());
-                        String pressure = String.valueOf(wheatherTurkey.getCurrent().getPressure_mb());
+                        String visibility = String.valueOf(wheatherTurkey.getCurrent().getVis_km()) + " km";
+                        String pressure = String.valueOf(wheatherTurkey.getCurrent().getPressure_mb() + " mb");
                         String humidity = String.valueOf(wheatherTurkey.getCurrent().getHumidity());
 
                         fragmentA.getValues(loc,status,temp,wind,image,pressure,humidity,visibility);
